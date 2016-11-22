@@ -1,25 +1,21 @@
 module Segundo_Contador(input logic CLK, R, output logic[3:0] O);
-	logic DIR, AUX1, AUX2;
-
-	always @(posedge CLK or posedge R)
-		if(R) begin
-			O = 4'd0;
-			AUX1 = 1'b1;
-			AUX2 = 1'b0;
-			DIR = 1'b0;
+	logic DIR;
+	
+	always_ff @(posedge CLK or posedge R)
+		if (R) begin
+			DIR <= 0;
+			O <= 4'd0;
 		end else begin
-			if(AUX1) begin
-				if(DIR)
-					O = O - 4'd1;
+			if (DIR)
+				if (O == 4'd0)
+					DIR <= 0;
 				else
-					O = O + 4'd1;
-				AUX2 = 1'b1;
-			end else
-			AUX1 = 1'b1;
-		if((O == 4'd15 || O == 4'd0) && AUX2) begin
-			AUX1 = 1'b0;
-			AUX2 = 1'b0;
-			DIR = ~DIR;
+					O <= O - 4'd1; 
+      		else
+				if (O == 4'd15)
+					DIR <= 1;
+				else
+					O <= O + 4'd1;
 		end
-		end
+  
 endmodule
